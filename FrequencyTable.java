@@ -14,7 +14,7 @@ public class FrequencyTable {
         return isEmpty;
     }
 
-    public int getSize() {
+    public int getLimit() {
         return frequencies.length;
     }
 

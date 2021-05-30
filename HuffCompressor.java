@@ -31,10 +31,7 @@ public class HuffCompressor {
         
         FrequencyTable table = createFrequencyTable(inputFile);
         table.incrementFrequency(EOF_SYMBOL);
-        HuffTreeNode root = HuffTreeNode.rootFromFrequencyTable(table);
-
-        System.out.println("Code tree: ");
-        System.out.println(root);
+        HuffEncodings encodings = new HuffEncodings(table);
     }
 
     public static void main(String[] args) {
