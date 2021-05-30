@@ -18,14 +18,8 @@ public class BitOutputStream extends OutputStream {
     private int buffer = 0;
     private int bitsToByte = 0;
 
-    public BitOutputStream(String filename){
-        try {
-            stream = new BufferedOutputStream(new FileOutputStream(filename));
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException("Could not create file", ex);
-        } catch (SecurityException ex) {
-            throw new RuntimeException("Security exception on creating file", ex);
-        }
+    public BitOutputStream(File file) throws FileNotFoundException {
+        stream = new BufferedOutputStream(new FileOutputStream(file));
         buffer = 0;
         bitsToByte = BITS_PER_BYTE;
     }
@@ -60,6 +54,11 @@ public class BitOutputStream extends OutputStream {
             numBits -= bitsToByte;
             bitsToByte = BITS_PER_BYTE;
             buffer = 0;
+        }
+
+        if (numBits > 0) {
+            buffer = (buffer << numBits) | value;
+            bitsToByte -= numBits;
         }
     }
 
