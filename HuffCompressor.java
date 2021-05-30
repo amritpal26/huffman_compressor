@@ -8,9 +8,23 @@ import java.util.List;
 public class HuffCompressor implements IHuffProcessor {
     private static final String usageMessage = "usage: Compressor target destination";
 
-    private static File getFileHandle(String filename) {
-        File file = new File(filename);
-        return file;
+    public static void compressFile(String inputFileName, String outFileName) throws IOException {
+        File inputFile = new File(inputFileName);
+        File outFile = new File(outFileName);
+        
+        FrequencyTable table = createFrequencyTable(inputFile);
+        table.incrementFrequency(PSEUDO_EOF_SYMBOL);
+        TreeNode codeTree = TreeNode.fromFrequencyTable(table);
+        CodesTable encodings = new CodesTable(codeTree, SYMBOLS_LIMIT);
+
+        try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile))) {
+            try (BitOutputStream outStream = new BitOutputStream(outFile)) {
+                writeHeaderData(codeTree, outStream);
+                writeEncodedData(encodings, inputStream, outStream);
+                outStream.close();
+            }
+            inputStream.close();
+        }
     }
 
     private static FrequencyTable createFrequencyTable(File file) throws IOException {
@@ -25,26 +39,7 @@ public class HuffCompressor implements IHuffProcessor {
         return table;
     }
 
-    public static void compressFile(String inputFileName, String outFileName) throws IOException {
-        File inputFile = getFileHandle(inputFileName);
-        File outFile = getFileHandle(outFileName);
-        
-        FrequencyTable table = createFrequencyTable(inputFile);
-        table.incrementFrequency(PSEUDO_EOF_SYMBOL);
-        HuffTreeNode codeTree = HuffTreeNode.fromFrequencyTable(table);
-        CodesTable encodings = new CodesTable(codeTree, SYMBOLS_LIMIT);
-
-        try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile))) {
-            try (BitOutputStream outStream = new BitOutputStream(outFile)) {
-                writeHeaderData(codeTree, outStream);
-                writeEncodedData(encodings, inputStream, outStream);
-                outStream.close();
-            }
-            inputStream.close();
-        }
-    }
-
-    private static void writeHeaderData(HuffTreeNode node, BitOutputStream outStream) {
+    private static void writeHeaderData(TreeNode node, BitOutputStream outStream) {
         if (node.left != null && node.right != null) {
             outStream.writeBits(1, '0');
             writeHeaderData(node.left, outStream);

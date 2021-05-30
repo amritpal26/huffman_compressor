@@ -1,20 +1,20 @@
 import java.util.PriorityQueue;
 
-public class HuffTreeNode implements Comparable<HuffTreeNode> {
+public class TreeNode implements Comparable<TreeNode> {
 
     public int symbol;
     public int weight;              // Number of times the character occcurs
-    public HuffTreeNode left;
-    public HuffTreeNode right;
+    public TreeNode left;
+    public TreeNode right;
 
-    public HuffTreeNode(int symbol, int weight, HuffTreeNode leftChild, HuffTreeNode rightChild) {
+    public TreeNode(int symbol, int weight, TreeNode leftChild, TreeNode rightChild) {
         this.symbol = symbol;
         this.weight = weight;
         this.left = leftChild;
         this.right = rightChild;
     }
 
-    public HuffTreeNode(int symbol, int weight) {
+    public TreeNode(int symbol, int weight) {
         this.symbol = symbol;
         this.weight = weight;
         this.left = null;
@@ -22,7 +22,7 @@ public class HuffTreeNode implements Comparable<HuffTreeNode> {
     }
 
     @Override
-    public int compareTo(HuffTreeNode node) {
+    public int compareTo(TreeNode node) {
         return weight - node.weight;
     }
 
@@ -32,7 +32,7 @@ public class HuffTreeNode implements Comparable<HuffTreeNode> {
         return builder.toString();
     }
 
-    private void toString(String prefix, HuffTreeNode node, StringBuilder builder) {
+    private void toString(String prefix, TreeNode node, StringBuilder builder) {
         if (node.left != null && node.right != null) {
             toString(prefix + "0", node.left , builder);
 			toString(prefix + "1", node.right, builder);
@@ -45,26 +45,26 @@ public class HuffTreeNode implements Comparable<HuffTreeNode> {
         }
     }
 
-    public static HuffTreeNode fromFrequencyTable(FrequencyTable table) {
+    public static TreeNode fromFrequencyTable(FrequencyTable table) {
         if (table.isEmpty()) {
             throw new RuntimeException("Cannot create table code tree from empty table.");
         }
 
-        PriorityQueue<HuffTreeNode> queue = new PriorityQueue<HuffTreeNode>();
+        PriorityQueue<TreeNode> queue = new PriorityQueue<TreeNode>();
         for(int i = 0; i < table.getLimit(); i++) {
             if (table.getFrequency(i) > 0) {
-                queue.add(new HuffTreeNode(i, table.getFrequency(i)));
+                queue.add(new TreeNode(i, table.getFrequency(i)));
             }
         }
 
         while (queue.size() > 1) {
-            HuffTreeNode left = queue.remove();
-            HuffTreeNode right = queue.remove();
-            HuffTreeNode newNode = new HuffTreeNode(-1, left.weight+right.weight, left, right);
+            TreeNode left = queue.remove();
+            TreeNode right = queue.remove();
+            TreeNode newNode = new TreeNode(-1, left.weight+right.weight, left, right);
             queue.add(newNode);
         }
 
-        HuffTreeNode root = queue.remove();
+        TreeNode root = queue.remove();
         return root;
     }
 }

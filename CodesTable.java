@@ -5,7 +5,7 @@ public class CodesTable {
     
     private List<List<Integer>> codes;
 
-    public CodesTable(HuffTreeNode codeTree, int sizeLimit) {
+    public CodesTable(TreeNode codeTree, int sizeLimit) {
         codes = new ArrayList<>(sizeLimit);
         for (int i = 0; i < sizeLimit; i++) {
             codes.add(null);
@@ -14,7 +14,7 @@ public class CodesTable {
         buildCodeList(codeTree, new ArrayList<Integer>());
     }
 
-    private void buildCodeList(HuffTreeNode node, List<Integer> prefix) {
+    private void buildCodeList(TreeNode node, List<Integer> prefix) {
         if (node.left != null && node.right != null) {
             prefix.add(0);
             buildCodeList(node.left, prefix);
