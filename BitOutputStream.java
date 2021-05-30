@@ -64,6 +64,7 @@ public class BitOutputStream extends OutputStream {
 
     public void close() {
         try{
+            flush();
             stream.close();
         }
         catch (IOException ex){
