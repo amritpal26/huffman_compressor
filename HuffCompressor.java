@@ -4,10 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 
 
-public class HuffCompressor {
-
-    private static final int SYMBOLS_LIMIT = 257;
-    private static final int EOF_SYMBOL = SYMBOLS_LIMIT-1;
+public class HuffCompressor implements IHuffProcessor {
     private static final String usageMessage = "usage: Compressor target destination";
 
     private static File getFileHandle(String filename) {
