@@ -40,15 +40,9 @@ public class HuffCompressor implements IHuffProcessor {
     }
 
     private static void writeHeaderData(TreeNode node, BitOutputStream outStream) {
-        if (node.left != null && node.right != null) {
+        if (node.isInternal()) {
             outStream.writeBits(1, '0');
             writeHeaderData(node.left, outStream);
-            writeHeaderData(node.right, outStream);
-        } else if (node.left != null) {
-            outStream.writeBits(1, '0');
-            writeHeaderData(node.left, outStream);
-        } else if (node.right != null) {
-            outStream.writeBits(1, '0');
             writeHeaderData(node.right, outStream);
         } else {
             if (node.symbol > PSEUDO_EOF_SYMBOL) {

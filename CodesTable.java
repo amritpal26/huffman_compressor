@@ -15,19 +15,11 @@ public class CodesTable {
     }
 
     private void buildCodeList(TreeNode node, List<Integer> prefix) {
-        if (node.left != null && node.right != null) {
+        if (node.isInternal()) {
             prefix.add(0);
             buildCodeList(node.left, prefix);
             prefix.remove(prefix.size()-1);
 
-            prefix.add(1);
-            buildCodeList(node.right, prefix);
-            prefix.remove(prefix.size()-1);
-        } else if (node.left != null) {
-            prefix.add(0);
-            buildCodeList(node.left, prefix);
-            prefix.remove(prefix.size()-1);
-        } else if (node.right != null) {
             prefix.add(1);
             buildCodeList(node.right, prefix);
             prefix.remove(prefix.size()-1);

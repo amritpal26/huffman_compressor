@@ -25,6 +25,10 @@ public class TreeNode implements Comparable<TreeNode> {
         return this.left == null && this.right == null;
     }
 
+    public boolean isInternal() {
+        return !this.isLeaf();
+    }
+
     @Override
     public int compareTo(TreeNode node) {
         return weight - node.weight;
@@ -37,7 +41,7 @@ public class TreeNode implements Comparable<TreeNode> {
     }
 
     private void toString(String prefix, TreeNode node, StringBuilder builder) {
-        if (node.left != null && node.right != null) {
+        if (node.isInternal()) {
             toString(prefix + "0", node.left , builder);
 			toString(prefix + "1", node.right, builder);
         } else {
