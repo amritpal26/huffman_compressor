@@ -1,6 +1,9 @@
 import java.util.List;
 import java.util.ArrayList;
 
+/*
+ * Stores a map from a symbol to its huffman bit codes.
+ */
 public class CodesTable {
     
     private List<List<Integer>> codes;

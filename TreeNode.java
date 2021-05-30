@@ -1,5 +1,8 @@
 import java.util.PriorityQueue;
 
+/*
+ * Huffman code tree used for compression and decompression.
+ */
 public class TreeNode implements Comparable<TreeNode> {
 
     public int symbol;

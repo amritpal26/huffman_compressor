@@ -8,6 +8,7 @@ public class HuffDecompressor implements IHuffProcessor {
     
     private static final String usageMessage = "usage: HuffDecompressor target destination";
 
+    // Decompress inputFileName and write output to outFileName.
     public static void decompressFile(String inputFileName, String outFileName) throws IOException {
         File inputFile = new File(inputFileName);
         File outFile = new File(outFileName);
@@ -23,6 +24,8 @@ public class HuffDecompressor implements IHuffProcessor {
         }
     }
 
+
+    // Step 2: Read header and recreate code tree to decode encoded text.
     private static void readHeader(BitInputStream inputStream, TreeNode node) throws IOException {
         int bit = inputStream.readBits(1);
         if (bit == 1) {
@@ -37,6 +40,7 @@ public class HuffDecompressor implements IHuffProcessor {
         }
     }
 
+    // Step 3: Write decoded text to output file.
     private static void writeOutputFile(BitInputStream inputStream, OutputStream outputStream, TreeNode codeTree) throws IOException {
         while (true) {
             int symbol = readNextSymbol(inputStream, codeTree);
@@ -46,6 +50,7 @@ public class HuffDecompressor implements IHuffProcessor {
 		}
     }
 
+    // Helper method to read symbols from bit input stream.
     private static int readNextSymbol(BitInputStream input, TreeNode root) throws IOException {
         TreeNode node = root;
 		while (true) {

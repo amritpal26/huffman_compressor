@@ -6,8 +6,10 @@ import java.util.List;
 
 
 public class HuffCompressor implements IHuffProcessor {
+    
     private static final String usageMessage = "usage: Compressor target destination";
 
+    // Compress inputFileName and write encoded data to outFileName.
     public static void compressFile(String inputFileName, String outFileName) throws IOException {
         File inputFile = new File(inputFileName);
         File outFile = new File(outFileName);
@@ -27,6 +29,7 @@ public class HuffCompressor implements IHuffProcessor {
         }
     }
 
+    // Create frequency table of each symbol in the text file.
     private static FrequencyTable createFrequencyTable(File file) throws IOException {
         FrequencyTable table = new FrequencyTable(SYMBOLS_LIMIT);
         try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
@@ -39,9 +42,11 @@ public class HuffCompressor implements IHuffProcessor {
         return table;
     }
 
+
+    // Step 2: Write the header with information to recreate code tree while decompressing.
     private static void writeHeaderData(TreeNode node, BitOutputStream outStream) {
         if (node.isInternal()) {
-            outStream.writeBits(1, '0');
+            outStream.writeBits(1, HEADER_TREE_LEFT_CHILD);
             writeHeaderData(node.left, outStream);
             writeHeaderData(node.right, outStream);
         } else {
@@ -51,12 +56,14 @@ public class HuffCompressor implements IHuffProcessor {
                 throw new IllegalArgumentException("Invalid symbol.");
             }
 
-            outStream.writeBits(1, 1);
+            outStream.writeBits(1, HEADER_TREE_RIGHT_CHILD);
             outStream.writeBits(BITS_PER_HEADER_WORD, node.symbol);
         }
     }
 
+    // Step 3: Write the coded text to the file.
     private static void writeEncodedData(CodesTable codes, BufferedInputStream inputStream, BitOutputStream outStream) throws IOException {
+        // Write encoded text from inputStream.
         while (inputStream.available() > 0) {
             int symbol = inputStream.read();
             List<Integer> bits = codes.getBitsForSymbol(symbol);
@@ -64,6 +71,8 @@ public class HuffCompressor implements IHuffProcessor {
                 outStream.writeBits(1, bit);
             }
         }
+
+        // Write pseudo end of file character at the end.
         List<Integer> bits = codes.getBitsForSymbol(PSEUDO_EOF_SYMBOL);
         for(int bit : bits) {
             outStream.writeBits(1, bit);
@@ -72,7 +81,7 @@ public class HuffCompressor implements IHuffProcessor {
 
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.err.println("Wrong input ");
+            System.err.println("Wrong arguments.");
             System.err.println(usageMessage);
             return ;
         }

@@ -1,3 +1,7 @@
+/*
+ * Store frequency of each character in the input file.
+ */
+
 public class FrequencyTable {
 
     private int[] frequencies;
