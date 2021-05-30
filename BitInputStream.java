@@ -14,17 +14,10 @@ public class BitInputStream extends InputStream {
     private int currentByteBuffer = 0;
     private File file;
 
-
-
-    public BitInputStream(String filename) {
-        file = new File(filename);
-        
-        try {
-            stream = new BufferedInputStream(new FileInputStream(file));
-            currentByteBuffer = currentByteBitCount = 0;
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException("File not found: " + ex);
-        }
+    public BitInputStream(File file) throws FileNotFoundException {
+        this.file = file;
+        stream = new BufferedInputStream(new FileInputStream(file));
+        currentByteBuffer = currentByteBitCount = 0;
     }
 
     public void reset() throws IOException {
@@ -40,7 +33,7 @@ public class BitInputStream extends InputStream {
         }
     }
     
-    public int read(int bitsToRead) throws IOException {
+    public int readBits(int bitsToRead) throws IOException {
         if (stream == null) {
             return -1;
         }
@@ -72,7 +65,7 @@ public class BitInputStream extends InputStream {
     
     @Override
     public int read() throws IOException {
-        return read(8);
+        return readBits(8);
     }
 
     public void close() {
