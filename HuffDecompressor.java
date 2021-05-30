@@ -21,8 +21,6 @@ public class HuffDecompressor implements IHuffProcessor {
             }
             inputStream.close();
         }
-
-        System.out.println(codeTree);
     }
 
     private static void readHeader(BitInputStream inputStream, TreeNode node) throws IOException {
@@ -42,7 +40,6 @@ public class HuffDecompressor implements IHuffProcessor {
     private static void writeOutputFile(BitInputStream inputStream, OutputStream outputStream, TreeNode codeTree) throws IOException {
         while (true) {
             int symbol = readNextSymbol(inputStream, codeTree);
-            System.out.println(String.format("read: %c", symbol));
 			if (symbol == PSEUDO_EOF_SYMBOL || symbol == -1)  // EOF symbol
 				break;
             outputStream.write(symbol);
@@ -65,7 +62,6 @@ public class HuffDecompressor implements IHuffProcessor {
 			if (nextNode.isLeaf()){
 				return nextNode.symbol;
             } else {
-                System.out.println(nextNode.symbol);
 				node = nextNode;
             }
 		}
