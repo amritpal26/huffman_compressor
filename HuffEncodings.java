@@ -30,7 +30,6 @@ public class HuffEncodings {
             }
         }
 
-        System.out.println(queue.size());
         while (queue.size() > 1) {
             HuffTreeNode left = queue.remove();
             HuffTreeNode right = queue.remove();
@@ -67,5 +66,15 @@ public class HuffEncodings {
             }
             codes.set(node.symbol, new ArrayList<>(prefix));
         }
+    }
+
+    public List<Integer> getBitsForSymbol(int symbol) {
+        if (symbol <= 0) {
+            throw new IllegalArgumentException("Invalid symbol");
+        } else if (symbol > codes.size()) {
+            throw new IllegalArgumentException("Symbol out of range.");
+        }
+
+        return codes.get(symbol);
     }
 }
