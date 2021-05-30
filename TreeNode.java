@@ -21,6 +21,10 @@ public class TreeNode implements Comparable<TreeNode> {
         this.right = null;
     }
 
+    public boolean isLeaf() {
+        return this.left == null && this.right == null;
+    }
+
     @Override
     public int compareTo(TreeNode node) {
         return weight - node.weight;
@@ -36,10 +40,6 @@ public class TreeNode implements Comparable<TreeNode> {
         if (node.left != null && node.right != null) {
             toString(prefix + "0", node.left , builder);
 			toString(prefix + "1", node.right, builder);
-        } else if (node.left != null) {
-            toString(prefix+"0", node.left , builder);
-        } else if (node.right != null) {
-            toString(prefix+"1", node.right, builder);
         } else {
             builder.append(String.format("%c -> %s\n", node.symbol, prefix));
         }
