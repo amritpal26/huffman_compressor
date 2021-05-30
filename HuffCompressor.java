@@ -12,6 +12,7 @@ public class HuffCompressor implements IHuffProcessor {
         File file = new File(filename);
         return file;
     }
+
     private static FrequencyTable createFrequencyTable(File file) throws IOException {
         FrequencyTable table = new FrequencyTable(SYMBOLS_LIMIT);
         try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
@@ -29,11 +30,13 @@ public class HuffCompressor implements IHuffProcessor {
         File outFile = getFileHandle(outFileName);
         
         FrequencyTable table = createFrequencyTable(inputFile);
-        table.incrementFrequency(EOF_SYMBOL);
-        HuffEncodings encodings = new HuffEncodings(table);
+        table.incrementFrequency(PSEUDO_EOF_SYMBOL);
+        HuffTreeNode codeTree = HuffTreeNode.fromFrequencyTable(table);
+        CodesTable encodings = new CodesTable(codeTree, SYMBOLS_LIMIT);
 
         try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile))) {
             try (BitOutputStream outStream = new BitOutputStream(outFile)) {
+                writeHeaderData(codeTree, outStream);
                 writeEncodedData(encodings, inputStream, outStream);
                 outStream.close();
             }
@@ -41,17 +44,40 @@ public class HuffCompressor implements IHuffProcessor {
         }
     }
 
-    private static void writeEncodedData(HuffEncodings codes, BufferedInputStream inputStream, BitOutputStream outStream) throws IOException {
+    private static void writeHeaderData(HuffTreeNode node, BitOutputStream outStream) {
+        if (node.left != null && node.right != null) {
+            outStream.writeBits(1, '0');
+            writeHeaderData(node.left, outStream);
+            writeHeaderData(node.right, outStream);
+        } else if (node.left != null) {
+            outStream.writeBits(1, '0');
+            writeHeaderData(node.left, outStream);
+        } else if (node.right != null) {
+            outStream.writeBits(1, '0');
+            writeHeaderData(node.right, outStream);
+        } else {
+            if (node.symbol > PSEUDO_EOF_SYMBOL) {
+                throw new IllegalArgumentException("Symbol exceeds the limit.");
+            } else if (node.symbol < 0) {
+                throw new IllegalArgumentException("Invalid symbol.");
+            }
+
+            outStream.writeBits(1, 1);
+            outStream.writeBits(BITS_PER_HEADER_WORD, node.symbol);
+        }
+    }
+
+    private static void writeEncodedData(CodesTable codes, BufferedInputStream inputStream, BitOutputStream outStream) throws IOException {
         while (inputStream.available() > 0) {
             int symbol = inputStream.read();
             List<Integer> bits = codes.getBitsForSymbol(symbol);
             for(int bit : bits) {
-                outStream.write(1, bit);
+                outStream.writeBits(1, bit);
             }
         }
-        List<Integer> bits = codes.getBitsForSymbol(EOF_SYMBOL);
+        List<Integer> bits = codes.getBitsForSymbol(PSEUDO_EOF_SYMBOL);
         for(int bit : bits) {
-            outStream.write(1, bit);
+            outStream.writeBits(1, bit);
         }
     }
 
