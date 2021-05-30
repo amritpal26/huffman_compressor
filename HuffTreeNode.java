@@ -50,4 +50,22 @@ public class HuffTreeNode implements Comparable<HuffTreeNode> {
         return root;
     }
 
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        toString("", this, builder);
+        return builder.toString();
+    }
+
+    private void toString(String prefix, HuffTreeNode node, StringBuilder builder) {
+        if (node.left != null && node.right != null) {
+            toString(prefix + "0", node.left , builder);
+			toString(prefix + "1", node.right, builder);
+        } else if (node.left != null) {
+            toString(prefix+"0", node.left , builder);
+        } else if (node.right != null) {
+            toString(prefix+"1", node.right, builder);
+        } else {
+            builder.append(String.format("%c -> %s\n", node.symbol, prefix));
+        }
+    }
 }
