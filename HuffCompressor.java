@@ -21,6 +21,7 @@ public class HuffCompressor implements IHuffProcessor {
 
         try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile))) {
             try (BitOutputStream outStream = new BitOutputStream(outFile)) {
+                writeMagicNumber(outStream);
                 writeHeaderData(codeTree, outStream);
                 writeEncodedData(encodings, inputStream, outStream);
                 outStream.close();
@@ -42,6 +43,10 @@ public class HuffCompressor implements IHuffProcessor {
         return table;
     }
 
+    // Step 1: Write magic number at the beginning of the file to identify the file.
+    private static void writeMagicNumber(BitOutputStream outStream) {
+        outStream.writeBits(BITS_PER_INT, MAGIC_NUMBER);
+    }
 
     // Step 2: Write the header with information to recreate code tree while decompressing.
     private static void writeHeaderData(TreeNode node, BitOutputStream outStream) {

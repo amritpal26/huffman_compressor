@@ -15,6 +15,7 @@ public class HuffDecompressor implements IHuffProcessor {
         
         TreeNode codeTree = new TreeNode(-1, 0);
         try (BitInputStream inputStream = new BitInputStream(inputFile)) {
+            verifyMagicNumber(inputStream);
             readHeader(inputStream, codeTree);
             try(OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outFile))) {
                 writeOutputFile(inputStream, outputStream, codeTree);
@@ -24,6 +25,14 @@ public class HuffDecompressor implements IHuffProcessor {
         }
     }
 
+    // Step 1: Read and verify magic number at the beginning of the file to identify the file.
+    private static void verifyMagicNumber(BitInputStream inputStream) throws IOException {
+        int magic = inputStream.readBits(BITS_PER_INT);
+        if (magic != MAGIC_NUMBER) {
+            inputStream.close();
+            throw new IOException("Invalid file. Magic number incorrect.");
+        }
+    }
 
     // Step 2: Read header and recreate code tree to decode encoded text.
     private static void readHeader(BitInputStream inputStream, TreeNode node) throws IOException {
