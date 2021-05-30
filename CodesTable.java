@@ -1,44 +1,17 @@
 import java.util.List;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
-public class HuffEncodings {
+public class CodesTable {
     
-    private HuffTreeNode codeTree;
     private List<List<Integer>> codes;
 
-    public HuffEncodings(FrequencyTable table) {
-        codeTree = createCodeTree(table);
-        
-        codes = new ArrayList<>(table.getLimit());
-        for (int i = 0; i < table.getLimit(); i++) {
+    public CodesTable(HuffTreeNode codeTree, int sizeLimit) {
+        codes = new ArrayList<>(sizeLimit);
+        for (int i = 0; i < sizeLimit; i++) {
             codes.add(null);
         }
 
         buildCodeList(codeTree, new ArrayList<Integer>());
-    }
-
-    private HuffTreeNode createCodeTree(FrequencyTable table) {
-        if (table.isEmpty()) {
-            throw new RuntimeException("Cannot create table code tree from empty table.");
-        }
-
-        PriorityQueue<HuffTreeNode> queue = new PriorityQueue<HuffTreeNode>();
-        for(int i = 0; i < table.getLimit(); i++) {
-            if (table.getFrequency(i) > 0) {
-                queue.add(new HuffTreeNode(i, table.getFrequency(i)));
-            }
-        }
-
-        while (queue.size() > 1) {
-            HuffTreeNode left = queue.remove();
-            HuffTreeNode right = queue.remove();
-            HuffTreeNode newNode = new HuffTreeNode(-1, left.weight+right.weight, left, right);
-            queue.add(newNode);
-        }
-
-        HuffTreeNode root = queue.remove();
-        return root;
     }
 
     private void buildCodeList(HuffTreeNode node, List<Integer> prefix) {
@@ -76,5 +49,9 @@ public class HuffEncodings {
         }
 
         return codes.get(symbol);
+    }
+
+    public int getSize() {
+        return codes.size();
     }
 }

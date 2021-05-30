@@ -1,3 +1,5 @@
+import java.util.PriorityQueue;
+
 public class HuffTreeNode implements Comparable<HuffTreeNode> {
 
     public int symbol;
@@ -41,5 +43,28 @@ public class HuffTreeNode implements Comparable<HuffTreeNode> {
         } else {
             builder.append(String.format("%c -> %s\n", node.symbol, prefix));
         }
+    }
+
+    public static HuffTreeNode fromFrequencyTable(FrequencyTable table) {
+        if (table.isEmpty()) {
+            throw new RuntimeException("Cannot create table code tree from empty table.");
+        }
+
+        PriorityQueue<HuffTreeNode> queue = new PriorityQueue<HuffTreeNode>();
+        for(int i = 0; i < table.getLimit(); i++) {
+            if (table.getFrequency(i) > 0) {
+                queue.add(new HuffTreeNode(i, table.getFrequency(i)));
+            }
+        }
+
+        while (queue.size() > 1) {
+            HuffTreeNode left = queue.remove();
+            HuffTreeNode right = queue.remove();
+            HuffTreeNode newNode = new HuffTreeNode(-1, left.weight+right.weight, left, right);
+            queue.add(newNode);
+        }
+
+        HuffTreeNode root = queue.remove();
+        return root;
     }
 }

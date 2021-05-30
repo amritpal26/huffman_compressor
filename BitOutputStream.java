@@ -38,7 +38,7 @@ public class BitOutputStream extends OutputStream {
         bitsToByte = BITS_PER_BYTE;
     }
 
-    public void write(int numBits, int value) {
+    public void writeBits(int numBits, int value) {
         value &= mask[numBits];
 
         while (numBits >= bitsToByte) {
@@ -73,6 +73,6 @@ public class BitOutputStream extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        write(b, 8);   
+        writeBits(b, 8);   
     }
 }
