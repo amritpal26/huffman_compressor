@@ -1,3 +1,5 @@
+package huffman;
+
 /*
  * Stores Constants for the Compression and decompression.
  */

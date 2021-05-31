@@ -1,3 +1,5 @@
+package huffman;
+
 import java.util.List;
 import java.util.ArrayList;
 

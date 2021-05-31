@@ -1,8 +1,8 @@
-// Inspiration from https://courses.cs.duke.edu/cps100e/spring11/assign/huff/src/BitOutputStream.java
+package huffman;
 
 import java.io.*;
 
-
+// Inspiration from https://courses.cs.duke.edu/cps100e/spring11/assign/huff/src/BitOutputStream.java
 public class BitOutputStream extends OutputStream {
 
     private static final int BITS_PER_BYTE = 8;

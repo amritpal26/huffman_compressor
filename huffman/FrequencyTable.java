@@ -1,3 +1,5 @@
+package huffman;
+
 /*
  * Store frequency of each character in the input file.
  */
