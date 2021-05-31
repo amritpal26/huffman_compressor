@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class HuffCompressor implements IHuffProcessor {
-    
+
     private static final String usageMessage = "usage: Compressor target destination";
 
     // Compress inputFileName and write encoded data to outFileName.
@@ -28,6 +28,8 @@ public class HuffCompressor implements IHuffProcessor {
             }
             inputStream.close();
         }
+
+        printStats(inputFile.length(), outFile.length());
     }
 
     // Create frequency table of each symbol in the text file.
@@ -84,6 +86,16 @@ public class HuffCompressor implements IHuffProcessor {
         }
     }
 
+    private static void printStats(long sizeBefore, long sizeAfter) {
+        double compressionRatio = (double) sizeBefore /  sizeAfter;
+        System.out.println("\n-----------------------------\n");
+        System.out.println("File compressed");
+        System.out.println(String.format("Size before compression: %d bytes", sizeBefore));
+        System.out.println(String.format("Size after compression: %d bytes", sizeAfter));
+        System.out.println(String.format("Compression ratio: %f", compressionRatio));
+        System.out.println("\n-----------------------------\n");
+    }
+
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("Wrong arguments.");
@@ -93,9 +105,10 @@ public class HuffCompressor implements IHuffProcessor {
 
         try {
             compressFile(args[0], args[1]);
-            System.out.println("File compressed");
         } catch (IOException ex) {
-            System.err.println("Error reading file: " + ex.toString());
+            System.out.println("\n");
+            System.err.println("Error reading file: " + ex.getMessage());
+            System.out.println("\n");
         }
     }
 }
