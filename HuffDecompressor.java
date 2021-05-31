@@ -23,6 +23,8 @@ public class HuffDecompressor implements IHuffProcessor {
             }
             inputStream.close();
         }
+
+        System.out.println("\nSuccess: File decompressed\n");
     }
 
     // Step 1: Read and verify magic number at the beginning of the file to identify the file.
@@ -90,7 +92,6 @@ public class HuffDecompressor implements IHuffProcessor {
 
         try {
             decompressFile(args[0], args[1]);
-            System.out.println("File decompressed");
         } catch (IOException ex) {
             System.err.println("Error reading file: " + ex.toString());
         }
