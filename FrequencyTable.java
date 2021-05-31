@@ -39,7 +39,7 @@ public class FrequencyTable {
         for (int i = 0; i < frequencies.length; i++) {
             if (frequencies[i] > 0) {
                 symbolCount++;
-                builder.append(String.format("%d --> %d\n", i, frequencies[i]));
+                builder.append(String.format("%c --> %d\n", i, frequencies[i]));
             }
         }
         builder.append(String.format("Number of symbols: %d", symbolCount));
